@@ -1,0 +1,14 @@
+# SDL wrapper library for C++11
+
+A sdl wrapper library organized as header files.
+Work in progress, any forms of conribution are welcome.
+
+## Features
+* Wrapper objects using RAII
+* Custorm error handling policies via templates
+
+## How to:
+1. Download or clone
+2. `#include "sdl_wrapper.h"`
+3. Add `include/` to your compiler include path, e.g. `g++ test.cpp -Iinclude`
+4. Compile
