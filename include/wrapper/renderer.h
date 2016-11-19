@@ -35,6 +35,23 @@ namespace SDL {
 class BaseRenderer_ : public Resource<SDL_Renderer> {
 protected:
 	BaseRenderer_(SDL_Renderer* r) :Resource {r} {}
+	
+public:
+	inline int clear() {
+		return SDL_RenderClear(this->res);
+	}
+
+	inline int copy(
+		SDL_Texture* t,
+		const SDL_Rect* src,
+		const SDL_Rect* dst)
+	{
+		return SDL_RenderCopy(this->res, t, src, dst);
+	}
+
+	inline void present() {
+		SDL_RenderPresent(this->res);
+	}
 };
 
 template<class ErrorHandler = Throw>
