@@ -74,7 +74,7 @@ public:
 };
 
 template<>
-class Renderer<NoThrow> : public BaseRenderer_, public Resource<SDL_Renderer> {
+class Renderer<NoChecking> : public BaseRenderer_, public Resource<SDL_Renderer> {
 public:
 	Renderer(SDL_Window* w, int i, Uint32 flags)
 	:Resource {SDL_CreateRenderer(w, i, flags)}

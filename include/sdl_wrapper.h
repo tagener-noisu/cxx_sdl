@@ -47,7 +47,7 @@ public:
 };
 
 template<>
-class Sdl<NoThrow> {
+class Sdl<NoChecking> {
 	int st;
 public:
 	Sdl(Uint32 flags =0) :st {SDL_Init(flags)} {}

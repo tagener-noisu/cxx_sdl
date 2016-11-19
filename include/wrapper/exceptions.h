@@ -61,7 +61,7 @@ struct Throw : public ErrorHandler {
 
 // Error handler used as template argument for wrapper classes
 // Does nothing
-struct NoThrow {};
+struct NoChecking {};
 
 } //namespace
 //-------------------------------------------------------------------

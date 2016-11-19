@@ -74,7 +74,7 @@ public:
 };
 
 template<>
-class Window<NoThrow> : public BaseWindow_, public Resource<SDL_Window> {
+class Window<NoChecking> : public BaseWindow_, public Resource<SDL_Window> {
 public:
 	Window(const char* title, int x, int y, int w, int h, Uint32 flags)
 	:Resource {SDL_CreateWindow(title, x, y, w, h, flags)}
