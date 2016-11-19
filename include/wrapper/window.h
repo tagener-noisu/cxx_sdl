@@ -107,6 +107,9 @@ public:
 	}
 };
 
+using SafeWindow = Window<Throw>;
+using UnsafeWindow = Window<NoChecking>;
+
 } // namespace
 //-------------------------------------------------------------------
 #endif

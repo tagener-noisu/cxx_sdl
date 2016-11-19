@@ -58,6 +58,9 @@ public:
 		SDL_Quit();
 	}
 };
+
+using SafeSdl = Sdl<Throw>;
+using UnsafeSdl = Sdl<NoChecking>;
 } //namespace
 //-------------------------------------------------------------------
 #endif

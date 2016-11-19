@@ -107,6 +107,9 @@ public:
 	}
 };
 
+using SafeRenderer = Renderer<Throw>;
+using UnsafeRenderer = Renderer<NoChecking>;
+
 } // namespace
 //-------------------------------------------------------------------
 #endif
