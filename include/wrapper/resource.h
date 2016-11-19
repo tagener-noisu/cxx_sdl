@@ -45,6 +45,8 @@ public:
 
 	T* get() { return res; }
 
+	void reset() { res = nullptr; }
+
 	inline operator T*() { return res; }
 
 protected:

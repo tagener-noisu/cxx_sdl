@@ -52,6 +52,15 @@ public:
 		if (!this->valid()) handle_error();
 	}
 
+	template<class T>
+	Window(Window<T>&& other)
+	:Resource {nullptr}
+	{
+		this->res = other.get();
+		other.reset();
+		if (!this->valid()) handle_error();
+	}
+
 	Window(const Window&) =delete;
 
 	Window& operator=(const Window&) =delete;
@@ -76,6 +85,14 @@ public:
 	:Resource {nullptr}
 	{
 		std::swap(other.res, this->res);
+	}
+
+	template<class T>
+	Window(Window<T>&& other)
+	:Resource {nullptr}
+	{
+		this->res = other.get();
+		other.reset();
 	}
 
 	Window(const Window&) =delete;
