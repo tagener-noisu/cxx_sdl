@@ -43,9 +43,7 @@ public:
 
 	bool valid() const { return res != nullptr; }
 
-	T* get() { return res; }
-
-	void reset() { res = nullptr; }
+	T*& get() { return res; }
 
 	inline operator T*() { return res; }
 

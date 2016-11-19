@@ -32,21 +32,23 @@
 
 namespace SDL {
 
-class BaseRenderer_ {
+class BaseRenderer_ : public Resource<SDL_Renderer> {
+protected:
+	BaseRenderer_(SDL_Renderer* r) :Resource {r} {}
 };
 
 template<class ErrorHandler = Throw>
-class Renderer : public BaseRenderer_, public Resource<SDL_Renderer> {
+class Renderer : public BaseRenderer_ {
 	ErrorHandler handle_error;
 public:
 	Renderer(SDL_Window* w, int i, Uint32 flags)
-	:Resource {SDL_CreateRenderer(w, i, flags)}
+	:BaseRenderer_ {SDL_CreateRenderer(w, i, flags)}
 	{
 		if (!this->valid()) handle_error(SDL_GetError());
 	}
 
 	Renderer(Renderer&& other)
-	:Resource {nullptr}
+	:BaseRenderer_ {nullptr}
 	{
 		std::swap(other.res, this->res);
 		if (!this->valid()) handle_error("Move from invalid object");
@@ -54,10 +56,9 @@ public:
 
 	template<typename T>
 	Renderer(Renderer<T>&& other)
-	:Resource {nullptr}
+	:BaseRenderer_ {nullptr}
 	{
-		this->res = other.get();
-		other.reset();
+		std::swap(other.get(), this->res);
 		if (!this->valid()) handle_error("Move from invalid object");
 	}
 
@@ -74,25 +75,24 @@ public:
 };
 
 template<>
-class Renderer<NoChecking> : public BaseRenderer_, public Resource<SDL_Renderer> {
+class Renderer<NoChecking> : public BaseRenderer_ {
 public:
 	Renderer(SDL_Window* w, int i, Uint32 flags)
-	:Resource {SDL_CreateRenderer(w, i, flags)}
+	:BaseRenderer_ {SDL_CreateRenderer(w, i, flags)}
 	{
 	}
 
 	Renderer(Renderer&& other)
-	:Resource {nullptr}
+	:BaseRenderer_ {nullptr}
 	{
 		std::swap(other.res, this->res);
 	}
 
 	template<typename T>
 	Renderer(Renderer<T>&& other)
-	:Resource {nullptr}
+	:BaseRenderer_ {nullptr}
 	{
-		this->res = other.get();
-		other.reset();
+		std::swap(other.get(), this->res);
 	}
 
 	Renderer(const Renderer&) =delete;

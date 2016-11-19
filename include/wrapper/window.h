@@ -32,21 +32,23 @@
 
 namespace SDL {
 
-class BaseWindow_ {
+class BaseWindow_ : public Resource<SDL_Window> {
+protected:
+	BaseWindow_(SDL_Window* w) :Resource {w} {}
 };
 
 template<class ErrorHandler = Throw>
-class Window : public BaseWindow_, public Resource<SDL_Window> {
+class Window : public BaseWindow_ {
 	ErrorHandler handle_error;
 public:
 	Window(const char* title, int x, int y, int w, int h, Uint32 flags)
-	:Resource {SDL_CreateWindow(title, x, y, w, h, flags)}
+	:BaseWindow_ {SDL_CreateWindow(title, x, y, w, h, flags)}
 	{
 		if (!this->valid()) handle_error();
 	}
 
 	Window(Window&& other)
-	:Resource {nullptr}
+	:BaseWindow_ {nullptr}
 	{
 		std::swap(other.res, this->res);
 		if (!this->valid()) handle_error();
@@ -54,10 +56,9 @@ public:
 
 	template<class T>
 	Window(Window<T>&& other)
-	:Resource {nullptr}
+	:BaseWindow_ {nullptr}
 	{
-		this->res = other.get();
-		other.reset();
+		std::swap(other.get(), this->res);
 		if (!this->valid()) handle_error();
 	}
 
@@ -74,22 +75,22 @@ public:
 };
 
 template<>
-class Window<NoChecking> : public BaseWindow_, public Resource<SDL_Window> {
+class Window<NoChecking> : public BaseWindow_ {
 public:
 	Window(const char* title, int x, int y, int w, int h, Uint32 flags)
-	:Resource {SDL_CreateWindow(title, x, y, w, h, flags)}
+	:BaseWindow_ {SDL_CreateWindow(title, x, y, w, h, flags)}
 	{
 	}
 
 	Window(Window&& other)
-	:Resource {nullptr}
+	:BaseWindow_ {nullptr}
 	{
 		std::swap(other.res, this->res);
 	}
 
 	template<class T>
 	Window(Window<T>&& other)
-	:Resource {nullptr}
+	:BaseWindow_ {nullptr}
 	{
 		this->res = other.get();
 		other.reset();
