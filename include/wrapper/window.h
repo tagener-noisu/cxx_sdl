@@ -35,6 +35,12 @@ namespace SDL {
 class BaseWindow_ : public Resource<SDL_Window> {
 protected:
 	BaseWindow_(SDL_Window* w) :Resource {w} {}
+
+public:
+	inline void destroy() {
+		SDL_DestroyWindow(this->res);
+		this->res = nullptr;
+	}
 };
 
 template<class ErrorHandler = Throw>
@@ -66,12 +72,7 @@ public:
 
 	Window& operator=(const Window&) =delete;
 
-	~Window() { if (this->res) destroy(); }
-
-	inline void destroy() {
-		SDL_DestroyWindow(this->res);
-		this->res = nullptr;
-	}
+	~Window() { if (this->res) this->destroy(); }
 };
 
 template<>
@@ -100,12 +101,7 @@ public:
 
 	Window& operator=(const Window&) =delete;
 
-	~Window() { if (this->res) destroy(); }
-
-	inline void destroy() {
-		SDL_DestroyWindow(this->res);
-		this->res = nullptr;
-	}
+	~Window() { if (this->res) this->destroy(); }
 };
 
 using SafeWindow = Window<Throw>;

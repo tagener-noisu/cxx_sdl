@@ -35,6 +35,12 @@ namespace SDL {
 class BaseSurface_ : public Resource<SDL_Surface> {
 protected:
 	BaseSurface_(SDL_Surface* s) :Resource {s} {}
+
+public:
+	inline void destroy() {
+		SDL_FreeSurface(this->res);
+		this->res = nullptr;
+	}
 };
 
 template<class ErrorHandler = Throw>
@@ -66,12 +72,7 @@ public:
 
 	Surface& operator=(const Surface&) =delete;
 
-	~Surface() { if (this->res) destroy(); }
-
-	inline void destroy() {
-		SDL_FreeSurface(this->res);
-		this->res = nullptr;
-	}
+	~Surface() { if (this->res) this->destroy(); }
 };
 
 template<>
@@ -99,12 +100,7 @@ public:
 
 	Surface& operator=(const Surface&) =delete;
 
-	~Surface() { if (this->res) destroy(); }
-
-	inline void destroy() {
-		SDL_FreeSurface(this->res);
-		this->res = nullptr;
-	}
+	~Surface() { if (this->res) this->destroy(); }
 };
 
 using SafeSurface = Surface<Throw>;

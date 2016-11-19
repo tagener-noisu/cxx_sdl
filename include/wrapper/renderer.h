@@ -35,7 +35,7 @@ namespace SDL {
 class BaseRenderer_ : public Resource<SDL_Renderer> {
 protected:
 	BaseRenderer_(SDL_Renderer* r) :Resource {r} {}
-	
+
 public:
 	inline int clear() {
 		return SDL_RenderClear(this->res);
@@ -51,6 +51,11 @@ public:
 
 	inline void present() {
 		SDL_RenderPresent(this->res);
+	}
+
+	inline void destroy() {
+		SDL_DestroyRenderer(this->res);
+		this->res = nullptr;
 	}
 };
 
@@ -83,12 +88,7 @@ public:
 
 	Renderer& operator=(const Renderer&) =delete;
 
-	~Renderer() { if (this->res) destroy(); }
-
-	inline void destroy() {
-		SDL_DestroyRenderer(this->res);
-		this->res = nullptr;
-	}
+	~Renderer() { if (this->res) this->destroy(); }
 };
 
 template<>
@@ -116,12 +116,7 @@ public:
 
 	Renderer& operator=(const Renderer&) =delete;
 
-	~Renderer() { if (this->res) destroy(); }
-
-	inline void destroy() {
-		SDL_DestroyRenderer(this->res);
-		this->res = nullptr;
-	}
+	~Renderer() { if (this->res) this->destroy(); }
 };
 
 using SafeRenderer = Renderer<Throw>;

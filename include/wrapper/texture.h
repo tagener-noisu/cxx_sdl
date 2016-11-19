@@ -35,6 +35,12 @@ namespace SDL {
 class BaseTexture_ : public Resource<SDL_Texture> {
 protected:
 	BaseTexture_(SDL_Texture* t) :Resource {t} {}
+
+public:
+	inline void destroy() {
+		SDL_DestroyTexture(this->res);
+		this->res = nullptr;
+	}
 };
 
 template<class ErrorHandler = Throw>
@@ -66,12 +72,7 @@ public:
 
 	Texture& operator=(const Texture&) =delete;
 
-	~Texture() { if (this->res) destroy(); }
-
-	inline void destroy() {
-		SDL_DestroyTexture(this->res);
-		this->res = nullptr;
-	}
+	~Texture() { if (this->res) this->destroy(); }
 };
 
 template<>
@@ -99,12 +100,7 @@ public:
 
 	Texture& operator=(const Texture&) =delete;
 
-	~Texture() { if (this->res) destroy(); }
-
-	inline void destroy() {
-		SDL_DestroyTexture(this->res);
-		this->res = nullptr;
-	}
+	~Texture() { if (this->res) this->destroy(); }
 };
 
 using SafeTexture = Texture<Throw>;
