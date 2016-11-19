@@ -33,27 +33,27 @@
 namespace SDL {
 
 template<class ErrorHandler =Throw>
-class SDL {
-	ErrorHandler handle_error();
+class Sdl {
+	ErrorHandler handle_error;
 public:
-	SDL(Uint32 flags =0) {
+	Sdl(Uint32 flags =0) {
 		if (SDL_Init(flags) != 0) handle_error(SDL_GetError());
 	}
 
-	~SDL() {
+	~Sdl() {
 		SDL_Quit();
 	}
 };
 
 template<>
-class SDL<NoThrow> {
+class Sdl<NoThrow> {
 	int st;
 public:
-	SDL(Uint32 flags =0) :st {SDL_Init(flags)} {}
+	Sdl(Uint32 flags =0) :st {SDL_Init(flags)} {}
 
 	int state() const { return st; }
 
-	~SDL() {
+	~Sdl() {
 		SDL_Quit();
 	}
 };
