@@ -37,6 +37,10 @@ protected:
 	BaseTexture_(SDL_Texture* t) :Resource {t} {}
 
 public:
+	inline int query(Uint32* format, int* access, int* w, int* h) {
+		return SDL_QueryTexture(this->res, format, access, w, h);
+	}
+
 	inline void destroy() {
 		SDL_DestroyTexture(this->res);
 		this->res = nullptr;

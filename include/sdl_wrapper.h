@@ -29,6 +29,8 @@
 #include "wrapper/exceptions.h"
 #include "wrapper/window.h"
 #include "wrapper/renderer.h"
+#include "wrapper/surface.h"
+#include "wrapper/texture.h"
 //-------------------------------------------------------------------
 
 namespace SDL {
@@ -61,6 +63,25 @@ public:
 
 using SafeSdl = Sdl<Throw>;
 using UnsafeSdl = Sdl<NoChecking>;
+
+//-------------------------------------------------------------------
+inline SDL_Texture* CreateTextureFromSurface(
+	SDL_Renderer* r,
+	SDL_Surface* s) {
+	return SDL_CreateTextureFromSurface(r, s);
+}
+
+inline const char* GetError() {
+	return SDL_GetError();
+}
+
+inline SDL_Surface* LoadBMP(const char* s) {
+	return SDL_LoadBMP(s);
+}
+
+inline void Delay(Uint32 ms) {
+	SDL_Delay(ms);
+}
 } //namespace
 //-------------------------------------------------------------------
 #endif
