@@ -35,6 +35,8 @@
 
 namespace SDL {
 
+using Rect = SDL_Rect;
+
 template<class ErrorHandler =Throw>
 class Sdl {
 	ErrorHandler handle_error;
@@ -65,6 +67,7 @@ using SafeSdl = Sdl<Throw>;
 using UnsafeSdl = Sdl<NoChecking>;
 
 //-------------------------------------------------------------------
+
 inline SDL_Texture* CreateTextureFromSurface(
 	SDL_Renderer* r,
 	SDL_Surface* s) {
