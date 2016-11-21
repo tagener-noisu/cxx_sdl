@@ -63,6 +63,10 @@ template<class ErrorHandler = Throw>
 class Renderer : public BaseRenderer_ {
 	ErrorHandler handle_error;
 public:
+	Renderer(SDL_Renderer* r) :BaseRenderer_ {r} {
+		if (!this->valid()) handle_error();
+	}
+
 	Renderer(SDL_Window* w, int i, Uint32 flags)
 	:BaseRenderer_ {SDL_CreateRenderer(w, i, flags)}
 	{
@@ -94,6 +98,8 @@ public:
 template<>
 class Renderer<NoChecking> : public BaseRenderer_ {
 public:
+	Renderer(SDL_Renderer* r) :BaseRenderer_ {r} {}
+
 	Renderer(SDL_Window* w, int i, Uint32 flags)
 	:BaseRenderer_ {SDL_CreateRenderer(w, i, flags)}
 	{

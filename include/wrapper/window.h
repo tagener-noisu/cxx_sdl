@@ -47,6 +47,10 @@ template<class ErrorHandler = Throw>
 class Window : public BaseWindow_ {
 	ErrorHandler handle_error;
 public:
+	Window(SDL_Window* w) :BaseWindow_ {w} {
+		if (!this->valid()) handle_error();
+	}
+
 	Window(const char* title, int x, int y, int w, int h, Uint32 flags)
 	:BaseWindow_ {SDL_CreateWindow(title, x, y, w, h, flags)}
 	{
@@ -78,6 +82,8 @@ public:
 template<>
 class Window<NoChecking> : public BaseWindow_ {
 public:
+	Window(SDL_Window* w) :BaseWindow_ {w} {}
+
 	Window(const char* title, int x, int y, int w, int h, Uint32 flags)
 	:BaseWindow_ {SDL_CreateWindow(title, x, y, w, h, flags)}
 	{
