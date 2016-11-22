@@ -38,8 +38,10 @@ protected:
 
 public:
 	inline void destroy() {
-		SDL_DestroyWindow(this->res);
-		this->res = nullptr;
+		if (this->res) {
+			SDL_DestroyWindow(this->res);
+			this->res = nullptr;
+		}
 	}
 };
 
@@ -76,7 +78,7 @@ public:
 
 	Window& operator=(const Window&) =delete;
 
-	~Window() { if (this->res) this->destroy(); }
+	~Window() { this->destroy(); }
 };
 
 template<>
@@ -107,7 +109,7 @@ public:
 
 	Window& operator=(const Window&) =delete;
 
-	~Window() { if (this->res) this->destroy(); }
+	~Window() { this->destroy(); }
 };
 
 using SafeWindow = Window<Throw>;

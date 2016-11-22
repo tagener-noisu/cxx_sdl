@@ -38,8 +38,10 @@ protected:
 
 public:
 	inline void destroy() {
-		SDL_FreeSurface(this->res);
-		this->res = nullptr;
+		if (this->res) {
+			SDL_FreeSurface(this->res);
+			this->res = nullptr;
+		}
 	}
 };
 
@@ -72,7 +74,7 @@ public:
 
 	Surface& operator=(const Surface&) =delete;
 
-	~Surface() { if (this->res) this->destroy(); }
+	~Surface() { this->destroy(); }
 };
 
 template<>
@@ -100,7 +102,7 @@ public:
 
 	Surface& operator=(const Surface&) =delete;
 
-	~Surface() { if (this->res) this->destroy(); }
+	~Surface() { this->destroy(); }
 };
 
 using SafeSurface = Surface<Throw>;

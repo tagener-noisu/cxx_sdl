@@ -42,8 +42,10 @@ public:
 	}
 
 	inline void destroy() {
-		SDL_DestroyTexture(this->res);
-		this->res = nullptr;
+		if (this->res) {
+			SDL_DestroyTexture(this->res);
+			this->res = nullptr;
+		}
 	}
 };
 
@@ -76,7 +78,7 @@ public:
 
 	Texture& operator=(const Texture&) =delete;
 
-	~Texture() { if (this->res) this->destroy(); }
+	~Texture() { this->destroy(); }
 };
 
 template<>
@@ -104,7 +106,7 @@ public:
 
 	Texture& operator=(const Texture&) =delete;
 
-	~Texture() { if (this->res) this->destroy(); }
+	~Texture() { this->destroy(); }
 };
 
 using SafeTexture = Texture<Throw>;

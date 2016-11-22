@@ -54,8 +54,10 @@ public:
 	}
 
 	inline void destroy() {
-		SDL_DestroyRenderer(this->res);
-		this->res = nullptr;
+		if (this->res) {
+			SDL_DestroyRenderer(this->res);
+			this->res = nullptr;
+		}
 	}
 };
 
@@ -92,7 +94,7 @@ public:
 
 	Renderer& operator=(const Renderer&) =delete;
 
-	~Renderer() { if (this->res) this->destroy(); }
+	~Renderer() { this->destroy(); }
 };
 
 template<>
@@ -122,7 +124,7 @@ public:
 
 	Renderer& operator=(const Renderer&) =delete;
 
-	~Renderer() { if (this->res) this->destroy(); }
+	~Renderer() { this->destroy(); }
 };
 
 using SafeRenderer = Renderer<Throw>;
