@@ -47,6 +47,30 @@ public:
 			this->res = nullptr;
 		}
 	}
+
+	inline int set_color_mod(Uint8 r, Uint8 g, Uint8 b) {
+		return SDL_SetTextureColorMod(this->res, r, g, b);
+	}
+
+	inline int get_color_mod(Uint8* r, Uint8* g, Uint8* b) {
+		return SDL_GetTextureColorMod(this->res, r, g, b);
+	}
+
+	inline int set_alpha_mod(Uint8 alpha) {
+		return SDL_SetTextureAlphaMod(this->res, alpha);
+	}
+
+	inline int get_alpha_mod(Uint8* alpha) {
+		return SDL_GetTextureAlphaMod(this->res, alpha);
+	}
+
+	inline int set_blend_mode(SDL_BlendMode bm) {
+		return SDL_SetTextureBlendMode(this->res, bm);
+	}
+
+	inline int get_blend_mode(SDL_BlendMode* bm) {
+		return SDL_GetTextureBlendMode(this->res, bm);
+	}
 };
 
 template<class ErrorHandler = Throw>
