@@ -43,6 +43,10 @@ public:
 			this->res = nullptr;
 		}
 	}
+
+	inline SDL_Renderer* get_renderer() {
+		return SDL_GetRenderer(this->res);
+	}
 };
 
 template<class ErrorHandler = Throw>

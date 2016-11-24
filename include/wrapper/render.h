@@ -59,6 +59,14 @@ public:
 			this->res = nullptr;
 		}
 	}
+
+	inline int get_info(SDL_RendererInfo* info) {
+		return SDL_GetRendererInfo(this->res, info);
+	}
+
+	inline int get_output_size(int* w, int* h) {
+		return SDL_GetRendererOutputSize(this->res, w, h);
+	}
 };
 
 template<class ErrorHandler = Throw>
