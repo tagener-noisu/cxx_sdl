@@ -28,7 +28,7 @@
 #include <SDL.h>
 #include "wrapper/exceptions.h"
 #include "wrapper/window.h"
-#include "wrapper/renderer.h"
+#include "wrapper/render.h"
 #include "wrapper/surface.h"
 #include "wrapper/texture.h"
 //-------------------------------------------------------------------
