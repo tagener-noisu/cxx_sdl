@@ -5,7 +5,26 @@ Work in progress, any forms of conribution are welcome.
 
 ## Features
 * Wrapper objects using RAII
-* Custorm error handling policies via templates
+* Wrapper clases use conversion operators so they can be used in vanilla
+SDL functions
+* Functions that works on an object become members of the corresponding class
+e.g. `SDL_RendererClear` can be called like this: `r.clear()` where `r` is an
+instance of the class `SDL::Renderer` (member functions use lowercase with
+underscores as a naming policy `object.long_func_name`)
+* Global functions e.g. `SDL\_Delay` are now in namespace and can be
+accessed like that: `SDL::Delay` (case is the same `SDL::DoSomethingUseful`)
+* All functions inlined
+* Custorm error handling policies `SDL::Texture<ErrorHandler>`, where
+`ErrorHandler` is one of your functors that deal with errors or one of standard
+two, `Throw` and `NoChecking`
+_functor is an object with an overloaded operator()()_
+* Aliases for classes with default error handers: Unsafe versions use
+`NoChecking` policy and Safe versions use `Throw` e.g. `UnsafeTexture`.
+Unsafe versions don't do any checking and can work if they're created with
+errors or not created at all. Oject state can be checked with member function
+`object.valid()` if it contains a pointer to SDL object e.g. SDL::Texture.
+For objects that have a state e.g. SDL::Sdl, it can be checked with
+`object.state()`
 
 ## How to:
 1. Download or clone
