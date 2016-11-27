@@ -60,6 +60,24 @@ public:
 		}
 	}
 
+	inline int set_draw_color(
+		Uint8 r,
+		Uint8 g,
+		Uint8 b,
+		Uint8 a)
+	{
+		return SDL_SetRenderDrawColor(this->res, r, g, b, a);
+	}
+
+	inline int get_draw_color(
+		Uint8* r,
+		Uint8* g,
+		Uint8* b,
+		Uint8* a)
+	{
+		return SDL_GetRenderDrawColor(this->res, r, g, b, a);
+	}
+
 	inline int get_info(SDL_RendererInfo* info) {
 		return SDL_GetRendererInfo(this->res, info);
 	}
