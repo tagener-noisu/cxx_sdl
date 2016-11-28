@@ -86,13 +86,13 @@ public:
 	Texture(SDL_Renderer* r, Uint32 format, int access, int w, int h)
 	:BaseTexture_ {SDL_CreateTexture(r, format, access, w, h)}
 	{
-		if (!this-valid()) handle_error(SDL_GetError());
+		if (!this->valid()) handle_error(SDL_GetError());
 	}
 
 	Texture(SDL_Renderer* r, SDL_Surface* s)
 	:BaseTexture_ {SDL_CreateTextureFromSurface(r, s)}
 	{
-		if (!this-valid()) handle_error(SDL_GetError());
+		if (!this->valid()) handle_error(SDL_GetError());
 	}
 
 	Texture(Texture&& other)
