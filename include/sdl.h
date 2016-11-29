@@ -82,6 +82,10 @@ inline SDL_Surface* LoadBMP(const char* s) {
 	return SDL_LoadBMP(s);
 }
 
+inline Uint32 GetTicks() {
+	return SDL_GetTicks();
+}
+
 inline void Delay(Uint32 ms) {
 	SDL_Delay(ms);
 }
