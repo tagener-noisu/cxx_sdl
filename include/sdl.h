@@ -35,7 +35,11 @@
 
 namespace SDL {
 
+// aliases
 using Rect = SDL_Rect;
+using RendererFlip = SDL_RendererFlip;
+
+//-------------------------------------------------------------------
 
 template<class ErrorHandler =Throw>
 class Sdl {
