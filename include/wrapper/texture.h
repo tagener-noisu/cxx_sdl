@@ -36,16 +36,18 @@ class BaseTexture_ : public Resource<SDL_Texture> {
 protected:
 	BaseTexture_(SDL_Texture* t) :Resource {t} {}
 
-public:
-	inline int query(Uint32* format, int* access, int* w, int* h) {
-		return SDL_QueryTexture(this->res, format, access, w, h);
-	}
+	~BaseTexture_() { destroy(); }
 
-	inline void destroy() {
+public:
+	void destroy() override {
 		if (this->res) {
 			SDL_DestroyTexture(this->res);
 			this->res = nullptr;
 		}
+	}
+
+	inline int query(Uint32* format, int* access, int* w, int* h) {
+		return SDL_QueryTexture(this->res, format, access, w, h);
 	}
 
 	inline int set_color_mod(Uint8 r, Uint8 g, Uint8 b) {

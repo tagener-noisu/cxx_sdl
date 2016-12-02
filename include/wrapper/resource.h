@@ -41,7 +41,11 @@ public:
 	Resource(T* r) :res {r} {
 	}
 
-	bool valid() const { return res != nullptr; }
+	virtual ~Resource() {};
+
+	virtual void destroy() =0;
+
+	virtual bool valid() const { return res != nullptr; }
 
 	T*& get() { return res; }
 

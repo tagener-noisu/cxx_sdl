@@ -36,7 +36,16 @@ class BaseRenderer_ : public Resource<SDL_Renderer> {
 protected:
 	BaseRenderer_(SDL_Renderer* r) :Resource {r} {}
 
+	~BaseRenderer_() { destroy(); }
+
 public:
+	void destroy() override {
+		if (this->res) {
+			SDL_DestroyRenderer(this->res);
+			this->res = nullptr;
+		}
+	}
+
 	inline int clear() {
 		return SDL_RenderClear(this->res);
 	}
@@ -49,15 +58,20 @@ public:
 		return SDL_RenderCopy(this->res, t, src, dst);
 	}
 
-	inline void present() {
-		SDL_RenderPresent(this->res);
+	inline int copy_ex(
+		SDL_Texture* t,
+		const SDL_Rect* src,
+		const SDL_Rect* dst,
+		double angle,
+		const SDL_Point* center,
+		const SDL_RendererFlip flip)
+	{
+		return SDL_RenderCopyEx(this->res, t, src, dst, angle,
+			center, flip);
 	}
 
-	inline void destroy() {
-		if (this->res) {
-			SDL_DestroyRenderer(this->res);
-			this->res = nullptr;
-		}
+	inline void present() {
+		SDL_RenderPresent(this->res);
 	}
 
 	inline int set_draw_color(
@@ -119,8 +133,6 @@ public:
 	Renderer(const Renderer&) =delete;
 
 	Renderer& operator=(const Renderer&) =delete;
-
-	~Renderer() { this->destroy(); }
 };
 
 template<>
@@ -149,8 +161,6 @@ public:
 	Renderer(const Renderer&) =delete;
 
 	Renderer& operator=(const Renderer&) =delete;
-
-	~Renderer() { this->destroy(); }
 };
 
 using SafeRenderer = Renderer<Throw>;

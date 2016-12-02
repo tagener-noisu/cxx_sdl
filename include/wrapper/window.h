@@ -36,8 +36,10 @@ class BaseWindow_ : public Resource<SDL_Window> {
 protected:
 	BaseWindow_(SDL_Window* w) :Resource {w} {}
 
+	~BaseWindow_() { destroy(); }
+
 public:
-	inline void destroy() {
+	void destroy() override {
 		if (this->res) {
 			SDL_DestroyWindow(this->res);
 			this->res = nullptr;
@@ -81,8 +83,6 @@ public:
 	Window(const Window&) =delete;
 
 	Window& operator=(const Window&) =delete;
-
-	~Window() { this->destroy(); }
 };
 
 template<>
@@ -112,8 +112,6 @@ public:
 	Window(const Window&) =delete;
 
 	Window& operator=(const Window&) =delete;
-
-	~Window() { this->destroy(); }
 };
 
 using SafeWindow = Window<Throw>;

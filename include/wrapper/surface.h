@@ -36,8 +36,10 @@ class BaseSurface_ : public Resource<SDL_Surface> {
 protected:
 	BaseSurface_(SDL_Surface* s) :Resource {s} {}
 
+	~BaseSurface_() { destroy(); }
+
 public:
-	inline void destroy() {
+	void destroy() override {
 		if (this->res) {
 			SDL_FreeSurface(this->res);
 			this->res = nullptr;
@@ -73,8 +75,6 @@ public:
 	Surface(const Surface&) =delete;
 
 	Surface& operator=(const Surface&) =delete;
-
-	~Surface() { this->destroy(); }
 };
 
 template<>
@@ -101,8 +101,6 @@ public:
 	Surface(const Surface&) =delete;
 
 	Surface& operator=(const Surface&) =delete;
-
-	~Surface() { this->destroy(); }
 };
 
 using SafeSurface = Surface<Throw>;
