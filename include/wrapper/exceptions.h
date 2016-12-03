@@ -49,8 +49,7 @@ struct ErrorHandler {
 	virtual void operator()(std::string) const =0;
 };
 
-// Error handler used as template argument for wrapper classes
-// Throws SDL::Error
+// Error handler, throws SDL::Error
 struct Throw : public ErrorHandler {
 	Throw() =default;
 
@@ -58,10 +57,6 @@ struct Throw : public ErrorHandler {
 		throw Error {msg};
 	}
 };
-
-// Error handler used as template argument for wrapper classes
-// Does nothing
-struct NoChecking {};
 
 } //namespace
 //-------------------------------------------------------------------

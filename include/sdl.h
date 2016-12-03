@@ -41,11 +41,13 @@ using RendererFlip = SDL_RendererFlip;
 
 //-------------------------------------------------------------------
 
-template<class ErrorHandler =Throw>
 class Sdl {
-	ErrorHandler handle_error;
 public:
 	Sdl(Uint32 flags =0) {
+		SDL_Init(flags);
+	}
+
+	Sdl(Uint32 flags, ErrorHandler& handle_error) {
 		if (SDL_Init(flags) != 0) handle_error(SDL_GetError());
 	}
 
@@ -54,29 +56,7 @@ public:
 	}
 };
 
-template<>
-class Sdl<NoChecking> {
-	int st;
-public:
-	Sdl(Uint32 flags =0) :st {SDL_Init(flags)} {}
-
-	int state() const { return st; }
-
-	~Sdl() {
-		SDL_Quit();
-	}
-};
-
-using SafeSdl = Sdl<Throw>;
-using UnsafeSdl = Sdl<NoChecking>;
-
 //-------------------------------------------------------------------
-
-inline SDL_Texture* CreateTextureFromSurface(
-	SDL_Renderer* r,
-	SDL_Surface* s) {
-	return SDL_CreateTextureFromSurface(r, s);
-}
 
 inline const char* GetError() {
 	return SDL_GetError();
@@ -84,6 +64,13 @@ inline const char* GetError() {
 
 inline SDL_Surface* LoadBMP(const char* s) {
 	return SDL_LoadBMP(s);
+}
+
+inline SDL_Surface* LoadBMP(const char* s, ErrorHandler&& error_handler) {
+	auto surface = SDL_LoadBMP(s);
+	if (surface == nullptr)
+		error_handler(SDL_GetError());
+	return surface;
 }
 
 inline Uint32 GetTicks() {
