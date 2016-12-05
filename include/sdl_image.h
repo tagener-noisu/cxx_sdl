@@ -35,22 +35,7 @@ namespace IMG {
 static_assert(SDL_IMAGE_MAJOR_VERSION == 2,
 	"Only version 2.x of SDL_image is supported");
 
-template<class ErrorHandler =Throw>
 class SdlImage {
-	ErrorHandler handle_error;
-public:
-	SdlImage(int flags =0) {
-		if ((IMG_Init(flags) & flags) != flags)
-			handle_error(SDL_GetError());
-	}
-
-	~SdlImage() {
-		IMG_Quit();
-	}
-};
-
-template<>
-class SdlImage<NoChecking> {
 	int st;
 public:
 	SdlImage(int flags =0) :st {IMG_Init(flags)} {}
@@ -62,13 +47,17 @@ public:
 	}
 };
 
-using SafeSdlImage = SdlImage<Throw>;
-using UnsafeSdlImage = SdlImage<NoChecking>;
-
 //-------------------------------------------------------------------
 
 inline SDL_Surface* Load(const char* file) {
 	return IMG_Load(file);
+}
+
+inline SDL_Surface* Load(const char* file, ErrorHandler& handle_error) {
+	auto s = IMG_Load(file);
+	if (s == nullptr)
+		handle_error(SDL_GetError());
+	return s;
 }
 
 } // namespace
