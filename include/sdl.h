@@ -43,17 +43,23 @@ using RendererFlip = SDL_RendererFlip;
 
 class Sdl {
 public:
-	Sdl(Uint32 flags =0) {
-		SDL_Init(flags);
+	Sdl(Uint32 flags =0) :st {SDL_Init(flags)}
+	{
 	}
 
-	Sdl(Uint32 flags, ErrorHandler& handle_error) {
-		if (SDL_Init(flags) != 0) handle_error(SDL_GetError());
+	Sdl(Uint32 flags, ErrorHandler& handle_error) :st {SDL_Init(flags)}
+	{
+		if (st != 0) handle_error(SDL_GetError());
 	}
+
+	int state() const { return st; }
 
 	~Sdl() {
 		SDL_Quit();
 	}
+
+private:
+	int st;
 };
 
 //-------------------------------------------------------------------
