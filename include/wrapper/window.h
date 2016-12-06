@@ -32,13 +32,46 @@
 
 namespace SDL {
 
-class BaseWindow_ : public Resource<SDL_Window> {
-protected:
-	BaseWindow_(SDL_Window* w) :Resource {w} {}
-
-	~BaseWindow_() { destroy(); }
-
+class Window : public Resource<SDL_Window> {
 public:
+	Window(SDL_Window* w) :Resource {w} {}
+
+	Window(SDL_Window* w, ErrorHandler& handle_error) :Resource {w}
+	{
+		if (!this->valid())
+			handle_error("Window created from null pointer");
+	}
+
+	Window(const char* title, int x, int y, int w, int h, Uint32 flags)
+	:Resource {SDL_CreateWindow(title, x, y, w, h, flags)}
+	{
+	}
+
+	Window(
+		const char* title,
+		int x,
+		int y,
+		int w,
+		int h,
+		Uint32 flags,
+		ErrorHandler& handle_error)
+		:Resource {SDL_CreateWindow(title, x, y, w, h, flags)}
+	{
+		if (!this->valid()) handle_error(SDL_GetError());
+	}
+
+	Window(Window&& other)
+	:Resource {nullptr}
+	{
+		std::swap(other.res, this->res);
+	}
+
+	Window(const Window&) =delete;
+
+	Window& operator=(const Window&) =delete;
+
+	~Window() { destroy(); }
+
 	void destroy() override {
 		if (this->res) {
 			SDL_DestroyWindow(this->res);
@@ -50,72 +83,6 @@ public:
 		return SDL_GetRenderer(this->res);
 	}
 };
-
-template<class ErrorHandler = Throw>
-class Window : public BaseWindow_ {
-	ErrorHandler handle_error;
-public:
-	Window(SDL_Window* w) :BaseWindow_ {w} {
-		if (!this->valid()) handle_error();
-	}
-
-	Window(const char* title, int x, int y, int w, int h, Uint32 flags)
-	:BaseWindow_ {SDL_CreateWindow(title, x, y, w, h, flags)}
-	{
-		if (!this->valid()) handle_error();
-	}
-
-	Window(Window&& other)
-	:BaseWindow_ {nullptr}
-	{
-		std::swap(other.res, this->res);
-		if (!this->valid()) handle_error();
-	}
-
-	template<class T>
-	Window(Window<T>&& other)
-	:BaseWindow_ {nullptr}
-	{
-		std::swap(other.get(), this->res);
-		if (!this->valid()) handle_error();
-	}
-
-	Window(const Window&) =delete;
-
-	Window& operator=(const Window&) =delete;
-};
-
-template<>
-class Window<NoChecking> : public BaseWindow_ {
-public:
-	Window(SDL_Window* w) :BaseWindow_ {w} {}
-
-	Window(const char* title, int x, int y, int w, int h, Uint32 flags)
-	:BaseWindow_ {SDL_CreateWindow(title, x, y, w, h, flags)}
-	{
-	}
-
-	Window(Window&& other)
-	:BaseWindow_ {nullptr}
-	{
-		std::swap(other.res, this->res);
-	}
-
-	template<class T>
-	Window(Window<T>&& other)
-	:BaseWindow_ {nullptr}
-	{
-		this->res = other.get();
-		other.reset();
-	}
-
-	Window(const Window&) =delete;
-
-	Window& operator=(const Window&) =delete;
-};
-
-using SafeWindow = Window<Throw>;
-using UnsafeWindow = Window<NoChecking>;
 
 } // namespace
 //-------------------------------------------------------------------
