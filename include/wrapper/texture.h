@@ -32,13 +32,56 @@
 
 namespace SDL {
 
-class BaseTexture_ : public Resource<SDL_Texture> {
-protected:
-	BaseTexture_(SDL_Texture* t) :Resource {t} {}
-
-	~BaseTexture_() { destroy(); }
-
+class Texture : public Resource<SDL_Texture> {
 public:
+	Texture(SDL_Texture* t) :Resource {t} {}
+
+	Texture(SDL_Texture* t, ErrorHandler& handle_error) :Resource {t}
+	{
+		if (!this->valid())
+			handle_error("Texture created from null pointer");
+	}
+
+	Texture(SDL_Renderer* r, Uint32 format, int access, int w, int h)
+	:Resource {SDL_CreateTexture(r, format, access, w, h)}
+	{
+	}
+
+	Texture(
+		SDL_Renderer* r,
+		Uint32 format,
+		int access,
+		int w,
+		int h,
+		ErrorHandler& handle_error)
+	:Resource {SDL_CreateTexture(r, format, access, w, h)}
+	{
+		if (!this->valid()) handle_error(SDL_GetError());
+	}
+
+	Texture(SDL_Renderer* r, SDL_Surface* s)
+	:Resource {SDL_CreateTextureFromSurface(r, s)}
+	{
+	}
+
+	Texture(SDL_Renderer* r, SDL_Surface* s, ErrorHandler& handle_error)
+	:Resource {SDL_CreateTextureFromSurface(r, s)}
+	{
+		if (!this->valid()) handle_error(SDL_GetError());
+	}
+
+	Texture(Texture&& other)
+	:Resource {nullptr}
+	{
+		std::swap(other.res, this->res);
+	}
+
+	Texture(const Texture&) =delete;
+
+	Texture& operator=(const Texture&) =delete;
+
+	~Texture() { destroy(); }
+
 	void destroy() override {
 		if (this->res) {
 			SDL_DestroyTexture(this->res);
@@ -50,6 +93,20 @@ public:
 		return SDL_QueryTexture(this->res, format, access, w, h);
 	}
 
+	inline int query(
+		Uint32* format,
+		int* access,
+		int* w,
+		int* h,
+		ErrorHandler& handle_error)
+	{
+		int status = SDL_QueryTexture(this->res, format, access, w, h);
+		if (status != 0)
+			handle_error(SDL_GetError());
+		return status;
+	}
+
+	// TODO: write overloads with error handlers
 	inline int set_color_mod(Uint8 r, Uint8 g, Uint8 b) {
 		return SDL_SetTextureColorMod(this->res, r, g, b);
 	}
@@ -74,91 +131,6 @@ public:
 		return SDL_GetTextureBlendMode(this->res, bm);
 	}
 };
-
-template<class ErrorHandler = Throw>
-class Texture : public BaseTexture_ {
-	ErrorHandler handle_error;
-public:
-	Texture(SDL_Texture* t)
-	:BaseTexture_ {t}
-	{
-		if (!this->valid()) handle_error(SDL_GetError());
-	}
-
-	Texture(SDL_Renderer* r, Uint32 format, int access, int w, int h)
-	:BaseTexture_ {SDL_CreateTexture(r, format, access, w, h)}
-	{
-		if (!this->valid()) handle_error(SDL_GetError());
-	}
-
-	Texture(SDL_Renderer* r, SDL_Surface* s)
-	:BaseTexture_ {SDL_CreateTextureFromSurface(r, s)}
-	{
-		if (!this->valid()) handle_error(SDL_GetError());
-	}
-
-	Texture(Texture&& other)
-	:BaseTexture_ {nullptr}
-	{
-		std::swap(other.res, this->res);
-		if (!this->valid()) handle_error("Move from invalid object");
-	}
-
-	template<typename T>
-	Texture(Texture<T>&& other)
-	:BaseTexture_ {nullptr}
-	{
-		std::swap(other.get(), this->res);
-		if (!this->valid()) handle_error("Move from invalid object");
-	}
-
-	Texture(const Texture&) =delete;
-
-	Texture& operator=(const Texture&) =delete;
-
-	~Texture() { this->destroy(); }
-};
-
-template<>
-class Texture<NoChecking> : public BaseTexture_ {
-public:
-	Texture(SDL_Texture* t)
-	:BaseTexture_ {t}
-	{
-	}
-
-	Texture(SDL_Renderer* r, Uint32 format, int access, int w, int h)
-	:BaseTexture_ {SDL_CreateTexture(r, format, access, w, h)}
-	{
-	}
-
-	Texture(SDL_Renderer* r, SDL_Surface* s)
-	:BaseTexture_ {SDL_CreateTextureFromSurface(r, s)}
-	{
-	}
-
-	Texture(Texture&& other)
-	:BaseTexture_ {nullptr}
-	{
-		std::swap(other.res, this->res);
-	}
-
-	template<typename T>
-	Texture(Texture<T>&& other)
-	:BaseTexture_ {nullptr}
-	{
-		std::swap(other.get(), this->res);
-	}
-
-	Texture(const Texture&) =delete;
-
-	Texture& operator=(const Texture&) =delete;
-
-	~Texture() { this->destroy(); }
-};
-
-using SafeTexture = Texture<Throw>;
-using UnsafeTexture = Texture<NoChecking>;
 
 } //namespace
 //-------------------------------------------------------------------
