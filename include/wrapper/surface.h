@@ -32,13 +32,27 @@
 
 namespace SDL {
 
-class BaseSurface_ : public Resource<SDL_Surface> {
-protected:
-	BaseSurface_(SDL_Surface* s) :Resource {s} {}
-
-	~BaseSurface_() { destroy(); }
-
+class Surface : public Resource<SDL_Surface> {
 public:
+	Surface(SDL_Surface* s) :Resource {s} {}
+
+	Surface(SDL_Surface* s, ErrorHandler& handle_error) :Resource {s}
+	{
+		if (!this->valid())
+			handle_error("Surface created from null pointer");
+	}
+
+	Surface(Surface&& other)
+	:Resource {nullptr}
+	{
+		std::swap(other.res, this->res);
+	}
+
+	Surface(const Surface&) =delete;
+	Surface& operator=(const Surface&) =delete;
+
+	~Surface() { destroy(); }
+
 	void destroy() override {
 		if (this->res) {
 			SDL_FreeSurface(this->res);
@@ -46,65 +60,6 @@ public:
 		}
 	}
 };
-
-template<class ErrorHandler = Throw>
-class Surface : public BaseSurface_ {
-	ErrorHandler handle_error;
-public:
-	Surface(SDL_Surface* t)
-	:BaseSurface_ {t}
-	{
-		if (!this->valid()) handle_error(SDL_GetError());
-	}
-
-	Surface(Surface&& other)
-	:BaseSurface_ {nullptr}
-	{
-		std::swap(other.res, this->res);
-		if (!this->valid()) handle_error("Move from invalid object");
-	}
-
-	template<typename T>
-	Surface(Surface<T>&& other)
-	:BaseSurface_ {nullptr}
-	{
-		std::swap(other.get(), this->res);
-		if (!this->valid()) handle_error("Move from invalid object");
-	}
-
-	Surface(const Surface&) =delete;
-
-	Surface& operator=(const Surface&) =delete;
-};
-
-template<>
-class Surface<NoChecking> : public BaseSurface_ {
-public:
-	Surface(SDL_Surface* t)
-	:BaseSurface_ {t}
-	{
-	}
-
-	Surface(Surface&& other)
-	:BaseSurface_ {nullptr}
-	{
-		std::swap(other.res, this->res);
-	}
-
-	template<typename T>
-	Surface(Surface<T>&& other)
-	:BaseSurface_ {nullptr}
-	{
-		std::swap(other.get(), this->res);
-	}
-
-	Surface(const Surface&) =delete;
-
-	Surface& operator=(const Surface&) =delete;
-};
-
-using SafeSurface = Surface<Throw>;
-using UnsafeSurface = Surface<NoChecking>;
 
 } //namespace
 //-------------------------------------------------------------------
