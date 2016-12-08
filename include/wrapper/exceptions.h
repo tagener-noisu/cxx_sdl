@@ -49,21 +49,13 @@ struct ErrorHandler {
 	virtual void operator()(std::string) const =0;
 };
 
-struct ThrowErrorHandler : public ErrorHandler {
-	static ThrowErrorHandler& Instance() {
-		if (instance == nullptr)
-			instance = new ThrowErrorHandler{};
-		return *instance;
-	}
+// Error handler, throws SDL::Error
+struct Throw : public ErrorHandler {
+	Throw() =default;
 
 	void operator()(std::string msg ="") const override {
 		throw Error {msg};
 	}
-
-private:
-	ThrowErrorHandler() =default;
-
-	static ThrowErrorHandler* instance;
 };
 
 } //namespace
