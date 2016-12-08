@@ -45,7 +45,7 @@ public:
 
 	virtual void destroy() =0;
 
-	virtual bool valid() const { return res != nullptr; }
+	bool valid() const { return res != nullptr; }
 
 	T*& get() { return res; }
 
