@@ -50,8 +50,8 @@ struct ErrorHandler {
 };
 
 // Error handler, throws SDL::Error
-struct Throw : public ErrorHandler {
-	Throw() =default;
+struct ThrowErrorHandler : public ErrorHandler {
+	ThrowErrorHandler() =default;
 
 	void operator()(std::string msg ="") const override {
 		throw Error {msg};
