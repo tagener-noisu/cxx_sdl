@@ -171,7 +171,7 @@ public:
 		Uint8* r,
 		Uint8* g,
 		Uint8* b,
-		Uint8* a
+		Uint8* a,
 		ErrorHandler& handle_error)
 	{
 		int status = SDL_GetRenderDrawColor(this->res, r, g, b, a);
