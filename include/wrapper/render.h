@@ -32,13 +32,40 @@
 
 namespace SDL {
 
-class BaseRenderer_ : public Resource<SDL_Renderer> {
-protected:
-	BaseRenderer_(SDL_Renderer* r) :Resource {r} {}
-
-	~BaseRenderer_() { destroy(); }
-
+class Renderer : public Resource<SDL_Renderer> {
 public:
+	Renderer(SDL_Renderer* r) :Resource {r} {}
+
+	Renderer(SDL_Renderer* r, ErrorHandler& handle_error) :Resource {r}
+	{
+		if (!this->valid())
+			handle_error("Renderer created from null pointer");
+	}
+
+	Renderer(SDL_Window* w, int i, Uint32 flags)
+	:Resource {SDL_CreateRenderer(w, i, flags)}
+	{
+	}
+
+	Renderer(SDL_Window* w, int i, Uint32 flags, ErrorHandler& handle_error)
+	:Resource {SDL_CreateRenderer(w, i, flags)}
+	{
+		if (!this->valid())
+			handle_error(SDL_GetError());
+	}
+
+	Renderer(Renderer&& other)
+	:Resource {nullptr}
+	{
+		std::swap(other.res, this->res);
+	}
+
+	Renderer(const Renderer&) =delete;
+
+	Renderer& operator=(const Renderer&) =delete;
+
+	~Renderer() { destroy(); }
+
 	void destroy() override {
 		if (this->res) {
 			SDL_DestroyRenderer(this->res);
@@ -50,12 +77,31 @@ public:
 		return SDL_RenderClear(this->res);
 	}
 
+	inline int clear(ErrorHandler& handle_error) {
+		int status = SDL_RenderClear(this->res);
+		if (status != 0)
+			handle_error(SDL_GetError());
+		return status;
+	}
+
 	inline int copy(
 		SDL_Texture* t,
 		const SDL_Rect* src,
 		const SDL_Rect* dst)
 	{
 		return SDL_RenderCopy(this->res, t, src, dst);
+	}
+
+	inline int copy(
+		SDL_Texture* t,
+		const SDL_Rect* src,
+		const SDL_Rect* dst,
+		ErrorHandler& handle_error)
+	{
+		int status = SDL_RenderCopy(this->res, t, src, dst);
+		if (status != 0)
+			handle_error(SDL_GetError());
+		return status;
 	}
 
 	inline int copy_ex(
@@ -68,6 +114,22 @@ public:
 	{
 		return SDL_RenderCopyEx(this->res, t, src, dst, angle,
 			center, flip);
+	}
+
+	inline int copy_ex(
+		SDL_Texture* t,
+		const SDL_Rect* src,
+		const SDL_Rect* dst,
+		double angle,
+		const SDL_Point* center,
+		const SDL_RendererFlip flip,
+		ErrorHandler& handle_error)
+	{
+		int status = SDL_RenderCopyEx(this->res, t, src, dst, angle,
+			center, flip);
+		if (status != 0)
+			handle_error(SDL_GetError());
+		return status;
 	}
 
 	inline void present() {
@@ -83,6 +145,19 @@ public:
 		return SDL_SetRenderDrawColor(this->res, r, g, b, a);
 	}
 
+	inline int set_draw_color(
+		Uint8 r,
+		Uint8 g,
+		Uint8 b,
+		Uint8 a,
+		ErrorHandler& handle_error)
+	{
+		int status = SDL_SetRenderDrawColor(this->res, r, g, b, a);
+		if (status != 0)
+			handle_error(SDL_GetError());
+		return status;
+	}
+
 	inline int get_draw_color(
 		Uint8* r,
 		Uint8* g,
@@ -92,79 +167,48 @@ public:
 		return SDL_GetRenderDrawColor(this->res, r, g, b, a);
 	}
 
+	inline int get_draw_color(
+		Uint8* r,
+		Uint8* g,
+		Uint8* b,
+		Uint8* a
+		ErrorHandler& handle_error)
+	{
+		int status = SDL_GetRenderDrawColor(this->res, r, g, b, a);
+		if (status != 0)
+			handle_error(SDL_GetError());
+		return status;
+	}
+
 	inline int get_info(SDL_RendererInfo* info) {
 		return SDL_GetRendererInfo(this->res, info);
+	}
+
+	inline int get_info(
+		SDL_RendererInfo* info,
+		ErrorHandler& handle_error)
+	{
+		int status = SDL_GetRendererInfo(this->res, info);
+		if (status != 0)
+			handle_error(SDL_GetError());
+		return status;
 	}
 
 	inline int get_output_size(int* w, int* h) {
 		return SDL_GetRendererOutputSize(this->res, w, h);
 	}
+
+	inline int get_output_size(
+		int* w,
+		int* h,
+		ErrorHandler& handle_error)
+	{
+		int status = SDL_GetRendererOutputSize(this->res, w, h);
+		if (status != 0)
+			handle_error(SDL_GetError());
+		return status;
+	}
 };
-
-template<class ErrorHandler = Throw>
-class Renderer : public BaseRenderer_ {
-	ErrorHandler handle_error;
-public:
-	Renderer(SDL_Renderer* r) :BaseRenderer_ {r} {
-		if (!this->valid()) handle_error();
-	}
-
-	Renderer(SDL_Window* w, int i, Uint32 flags)
-	:BaseRenderer_ {SDL_CreateRenderer(w, i, flags)}
-	{
-		if (!this->valid()) handle_error(SDL_GetError());
-	}
-
-	Renderer(Renderer&& other)
-	:BaseRenderer_ {nullptr}
-	{
-		std::swap(other.res, this->res);
-		if (!this->valid()) handle_error("Move from invalid object");
-	}
-
-	template<typename T>
-	Renderer(Renderer<T>&& other)
-	:BaseRenderer_ {nullptr}
-	{
-		std::swap(other.get(), this->res);
-		if (!this->valid()) handle_error("Move from invalid object");
-	}
-
-	Renderer(const Renderer&) =delete;
-
-	Renderer& operator=(const Renderer&) =delete;
-};
-
-template<>
-class Renderer<NoChecking> : public BaseRenderer_ {
-public:
-	Renderer(SDL_Renderer* r) :BaseRenderer_ {r} {}
-
-	Renderer(SDL_Window* w, int i, Uint32 flags)
-	:BaseRenderer_ {SDL_CreateRenderer(w, i, flags)}
-	{
-	}
-
-	Renderer(Renderer&& other)
-	:BaseRenderer_ {nullptr}
-	{
-		std::swap(other.res, this->res);
-	}
-
-	template<typename T>
-	Renderer(Renderer<T>&& other)
-	:BaseRenderer_ {nullptr}
-	{
-		std::swap(other.get(), this->res);
-	}
-
-	Renderer(const Renderer&) =delete;
-
-	Renderer& operator=(const Renderer&) =delete;
-};
-
-using SafeRenderer = Renderer<Throw>;
-using UnsafeRenderer = Renderer<NoChecking>;
 
 } // namespace
 //-------------------------------------------------------------------
