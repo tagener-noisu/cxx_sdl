@@ -25,34 +25,60 @@
 #ifndef SDL_RESOURCE_H
 #define SDL_RESOURCE_H 1
 //-------------------------------------------------------------------
+#include <SDL.h>
+#include <memory>
 //-------------------------------------------------------------------
 
 namespace SDL {
 
 // A base class used as storage for sdl entities e.g. SDL_Window*,
 // SDL_Surface* etc.
-// Proper destruction should be completed in a descendant class.
 //
 // Provides operator T() so descendants could be used
 // with plain sdl functions.
 template<class T>
 class Resource {
 public:
+	struct ResourceDelete;
+	using resource_type = std::unique_ptr<T, ResourceDelete>;
+
 	Resource(T* r) :res {r} {
 	}
 
-	virtual ~Resource() {};
-
-	virtual void destroy() =0;
-
 	bool valid() const { return res != nullptr; }
 
-	T*& get() { return res; }
+	inline T* get() { return res.get(); }
 
-	inline operator T*() { return res; }
+	inline operator T*() { return res.get(); }
+
+	// Deleter used by unique_ptr
+	struct ResourceDelete {
+		ResourceDelete() =default;
+
+		void operator()(SDL_Renderer* p) {
+			SDL_DestroyRenderer(p);
+		}
+
+		void operator()(SDL_Texture* p) {
+			SDL_DestroyTexture(p);
+		}
+
+		void operator()(SDL_Window* p) {
+			SDL_DestroyWindow(p);
+		}
+
+		void operator()(SDL_Surface* p) {
+			SDL_FreeSurface(p);
+		}
+	};
 
 protected:
-	T* res;
+	resource_type& resource() {
+		return res;
+	}
+
+private:
+	resource_type res;
 };
 
 } // namespace
