@@ -43,17 +43,17 @@ private:
 	std::string msg;
 };
 
-
 // Interface for the error handling classes
 struct ErrorHandler {
-	virtual void operator()(std::string) const =0;
+	using argument_type = std::string;
+	virtual void operator()(argument_type) const =0;
 };
 
 // Error handler, throws SDL::Error
 struct ThrowErrorHandler : public ErrorHandler {
 	ThrowErrorHandler() =default;
 
-	void operator()(std::string msg ="") const override {
+	void operator()(argument_type msg ="") const override {
 		throw Error {msg};
 	}
 };
