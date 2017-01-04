@@ -63,24 +63,15 @@ public:
 	Window(Window&& other)
 	:Resource {nullptr}
 	{
-		std::swap(other.res, this->res);
+		std::swap(this->resource(), other.resource());
 	}
 
 	Window(const Window&) =delete;
 
 	Window& operator=(const Window&) =delete;
 
-	~Window() { destroy(); }
-
-	void destroy() override {
-		if (this->res) {
-			SDL_DestroyWindow(this->res);
-			this->res = nullptr;
-		}
-	}
-
 	inline SDL_Renderer* get_renderer() {
-		return SDL_GetRenderer(this->res);
+		return SDL_GetRenderer(Resource::get());
 	}
 };
 
