@@ -57,28 +57,19 @@ public:
 	Renderer(Renderer&& other)
 	:Resource {nullptr}
 	{
-		std::swap(other.res, this->res);
+		std::swap(this->resource(), other.resource());
 	}
 
 	Renderer(const Renderer&) =delete;
 
 	Renderer& operator=(const Renderer&) =delete;
 
-	~Renderer() { destroy(); }
-
-	void destroy() override {
-		if (this->res) {
-			SDL_DestroyRenderer(this->res);
-			this->res = nullptr;
-		}
-	}
-
 	inline int clear() {
-		return SDL_RenderClear(this->res);
+		return SDL_RenderClear(Resource::get());
 	}
 
 	inline int clear(ErrorHandler& handle_error) {
-		int status = SDL_RenderClear(this->res);
+		int status = SDL_RenderClear(Resource::get());
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
@@ -89,7 +80,7 @@ public:
 		const SDL_Rect* src,
 		const SDL_Rect* dst)
 	{
-		return SDL_RenderCopy(this->res, t, src, dst);
+		return SDL_RenderCopy(Resource::get(), t, src, dst);
 	}
 
 	inline int copy(
@@ -98,7 +89,7 @@ public:
 		const SDL_Rect* dst,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_RenderCopy(this->res, t, src, dst);
+		int status = SDL_RenderCopy(Resource::get(), t, src, dst);
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
@@ -112,7 +103,7 @@ public:
 		const SDL_Point* center,
 		const SDL_RendererFlip flip)
 	{
-		return SDL_RenderCopyEx(this->res, t, src, dst, angle,
+		return SDL_RenderCopyEx(Resource::get(), t, src, dst, angle,
 			center, flip);
 	}
 
@@ -125,7 +116,7 @@ public:
 		const SDL_RendererFlip flip,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_RenderCopyEx(this->res, t, src, dst, angle,
+		int status = SDL_RenderCopyEx(Resource::get(), t, src, dst, angle,
 			center, flip);
 		if (status != 0)
 			handle_error(SDL_GetError());
@@ -133,7 +124,7 @@ public:
 	}
 
 	inline void present() {
-		SDL_RenderPresent(this->res);
+		SDL_RenderPresent(Resource::get());
 	}
 
 	inline int set_draw_color(
@@ -142,7 +133,7 @@ public:
 		Uint8 b,
 		Uint8 a)
 	{
-		return SDL_SetRenderDrawColor(this->res, r, g, b, a);
+		return SDL_SetRenderDrawColor(Resource::get(), r, g, b, a);
 	}
 
 	inline int set_draw_color(
@@ -152,7 +143,7 @@ public:
 		Uint8 a,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_SetRenderDrawColor(this->res, r, g, b, a);
+		int status = SDL_SetRenderDrawColor(Resource::get(), r, g, b, a);
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
@@ -164,7 +155,7 @@ public:
 		Uint8* b,
 		Uint8* a)
 	{
-		return SDL_GetRenderDrawColor(this->res, r, g, b, a);
+		return SDL_GetRenderDrawColor(Resource::get(), r, g, b, a);
 	}
 
 	inline int get_draw_color(
@@ -174,28 +165,28 @@ public:
 		Uint8* a,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_GetRenderDrawColor(this->res, r, g, b, a);
+		int status = SDL_GetRenderDrawColor(Resource::get(), r, g, b, a);
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
 	}
 
 	inline int get_info(SDL_RendererInfo* info) {
-		return SDL_GetRendererInfo(this->res, info);
+		return SDL_GetRendererInfo(Resource::get(), info);
 	}
 
 	inline int get_info(
 		SDL_RendererInfo* info,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_GetRendererInfo(this->res, info);
+		int status = SDL_GetRendererInfo(Resource::get(), info);
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
 	}
 
 	inline int get_output_size(int* w, int* h) {
-		return SDL_GetRendererOutputSize(this->res, w, h);
+		return SDL_GetRendererOutputSize(Resource::get(), w, h);
 	}
 
 	inline int get_output_size(
@@ -203,7 +194,7 @@ public:
 		int* h,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_GetRendererOutputSize(this->res, w, h);
+		int status = SDL_GetRendererOutputSize(Resource::get(), w, h);
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
