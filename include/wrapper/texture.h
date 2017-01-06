@@ -73,24 +73,15 @@ public:
 	Texture(Texture&& other)
 	:Resource {nullptr}
 	{
-		std::swap(other.res, this->res);
+		std::swap(this->resource(), other.resource());
 	}
 
 	Texture(const Texture&) =delete;
 
 	Texture& operator=(const Texture&) =delete;
 
-	~Texture() { destroy(); }
-
-	void destroy() override {
-		if (this->res) {
-			SDL_DestroyTexture(this->res);
-			this->res = nullptr;
-		}
-	}
-
 	inline int query(Uint32* format, int* access, int* w, int* h) {
-		return SDL_QueryTexture(this->res, format, access, w, h);
+		return SDL_QueryTexture(Resource::get(), format, access, w, h);
 	}
 
 	inline int query(
@@ -100,7 +91,7 @@ public:
 		int* h,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_QueryTexture(this->res, format, access, w, h);
+		int status = SDL_QueryTexture(Resource::get(), format, access, w, h);
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
@@ -108,27 +99,27 @@ public:
 
 	// TODO: write overloads with error handlers
 	inline int set_color_mod(Uint8 r, Uint8 g, Uint8 b) {
-		return SDL_SetTextureColorMod(this->res, r, g, b);
+		return SDL_SetTextureColorMod(Resource::get(), r, g, b);
 	}
 
 	inline int get_color_mod(Uint8* r, Uint8* g, Uint8* b) {
-		return SDL_GetTextureColorMod(this->res, r, g, b);
+		return SDL_GetTextureColorMod(Resource::get(), r, g, b);
 	}
 
 	inline int set_alpha_mod(Uint8 alpha) {
-		return SDL_SetTextureAlphaMod(this->res, alpha);
+		return SDL_SetTextureAlphaMod(Resource::get(), alpha);
 	}
 
 	inline int get_alpha_mod(Uint8* alpha) {
-		return SDL_GetTextureAlphaMod(this->res, alpha);
+		return SDL_GetTextureAlphaMod(Resource::get(), alpha);
 	}
 
 	inline int set_blend_mode(SDL_BlendMode bm) {
-		return SDL_SetTextureBlendMode(this->res, bm);
+		return SDL_SetTextureBlendMode(Resource::get(), bm);
 	}
 
 	inline int get_blend_mode(SDL_BlendMode* bm) {
-		return SDL_GetTextureBlendMode(this->res, bm);
+		return SDL_GetTextureBlendMode(Resource::get(), bm);
 	}
 };
 
