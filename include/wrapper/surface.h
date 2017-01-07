@@ -45,20 +45,11 @@ public:
 	Surface(Surface&& other)
 	:Resource {nullptr}
 	{
-		std::swap(other.res, this->res);
+		std::swap(this->resource(), other.resource());
 	}
 
 	Surface(const Surface&) =delete;
 	Surface& operator=(const Surface&) =delete;
-
-	~Surface() { destroy(); }
-
-	void destroy() override {
-		if (this->res) {
-			SDL_FreeSurface(this->res);
-			this->res = nullptr;
-		}
-	}
 };
 
 } //namespace
