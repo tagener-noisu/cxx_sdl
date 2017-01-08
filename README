@@ -14,20 +14,12 @@ underscores as a naming policy `object.long_func_name`)
 * Global functions e.g. `SDL\_Delay` are now in namespace and can be
 accessed like that: `SDL::Delay` (case is the same `SDL::DoSomethingUseful`)
 * All functions inlined
-* Custorm error handling policies `SDL::Texture<ErrorHandler>`, where
-`ErrorHandler` is one of your functors that deal with errors or one of standard
-two, `Throw` and `NoChecking`
+* Custom error handling with functors accepted by overloaded functions
+* Default error handlers
 _functor is an object with an overloaded operator()()_
-* Aliases for classes with default error handers: Unsafe versions use
-`NoChecking` policy and Safe versions use `Throw` e.g. `UnsafeTexture`.
-Unsafe versions don't do any checking and can work if they're created with
-errors or not created at all. Oject state can be checked with member function
-`object.valid()` if it contains a pointer to SDL object e.g. SDL::Texture.
-For objects that have a state e.g. SDL::Sdl, it can be checked with
-`object.state()`
 
 ## How to:
 1. Download or clone
-2. `#include "sdl_wrapper.h"`
+2. `#include` `"sdl\_wrapper.h"`, `"sdl\_image.h"` etc.
 3. Add `include/` to your compiler include path, e.g. `g++ test.cpp -Iinclude`
 4. Compile
