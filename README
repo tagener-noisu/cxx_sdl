@@ -1,11 +1,11 @@
 # SDL wrapper library for C++11
 
 A sdl wrapper library organized as header files.
-Work in progress, any forms of conribution are welcome.
+Work in progress, any forms of contribution are welcome.
 
 ## Features
-* Wrapper objects using RAII
-* Wrapper clases use conversion operators so they can be used in vanilla
+* Wrapper classes using RAII
+* Wrapper classes use conversion operators so they can be used in vanilla
 SDL functions
 * Functions that works on an object become members of the corresponding class
 e.g. `SDL_RendererClear` can be called like this: `r.clear()` where `r` is an
@@ -15,8 +15,8 @@ underscores as a naming policy `object.long_func_name`)
 accessed like that: `SDL::Delay` (case is the same `SDL::DoSomethingUseful`)
 * All functions inlined
 * Custom error handling with functors accepted by overloaded functions
-* Default error handlers
 _functor is an object with an overloaded operator()()_
+* Default error handlers
 
 ## How to:
 1. Download or clone
