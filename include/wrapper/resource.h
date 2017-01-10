@@ -38,8 +38,9 @@ namespace SDL {
 // with plain sdl functions.
 template<class T>
 class Resource {
-public:
+private:
 	struct ResourceDelete;
+public:
 	using resource_type = std::unique_ptr<T, ResourceDelete>;
 
 	Resource(T* r) :res {r} {
@@ -51,6 +52,12 @@ public:
 
 	inline operator T*() { return res.get(); }
 
+protected:
+	resource_type& resource() {
+		return res;
+	}
+
+private:
 	// Deleter used by unique_ptr
 	struct ResourceDelete {
 		ResourceDelete() =default;
@@ -72,12 +79,6 @@ public:
 		}
 	};
 
-protected:
-	resource_type& resource() {
-		return res;
-	}
-
-private:
 	resource_type res;
 };
 
