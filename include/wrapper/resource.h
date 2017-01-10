@@ -31,7 +31,7 @@
 
 namespace SDL {
 
-// A base class used as storage for sdl entities e.g. SDL_Window*,
+// A base class used as a storage for sdl entities e.g. SDL_Window*,
 // SDL_Surface* etc.
 //
 // Provides operator T() so descendants could be used
@@ -48,9 +48,9 @@ public:
 
 	bool valid() const { return res != nullptr; }
 
-	inline T* get() { return res.get(); }
+	inline T* get() const { return res.get(); }
 
-	inline operator T*() { return res.get(); }
+	inline operator T*() const { return res.get(); }
 
 protected:
 	resource_type& resource() {
