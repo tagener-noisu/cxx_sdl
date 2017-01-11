@@ -62,19 +62,19 @@ private:
 	struct ResourceDelete {
 		ResourceDelete() =default;
 
-		void operator()(SDL_Renderer* p) {
+		void operator()(SDL_Renderer* p) const {
 			SDL_DestroyRenderer(p);
 		}
 
-		void operator()(SDL_Texture* p) {
+		void operator()(SDL_Texture* p) const {
 			SDL_DestroyTexture(p);
 		}
 
-		void operator()(SDL_Window* p) {
+		void operator()(SDL_Window* p) const {
 			SDL_DestroyWindow(p);
 		}
 
-		void operator()(SDL_Surface* p) {
+		void operator()(SDL_Surface* p) const {
 			SDL_FreeSurface(p);
 		}
 	};
