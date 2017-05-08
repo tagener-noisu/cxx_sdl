@@ -34,6 +34,9 @@ namespace SDL {
 
 class Renderer : public Resource<SDL_Renderer> {
 public:
+	enum Driver {
+		ANY=-1
+	};
 	Renderer(SDL_Renderer* r) :Resource {r} {}
 
 	Renderer(SDL_Renderer* r, ErrorHandler& handle_error) :Resource {r}
