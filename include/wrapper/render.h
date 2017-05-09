@@ -130,6 +130,10 @@ public:
 		SDL_RenderPresent(Resource::get());
 	}
 
+	inline void fill_rect(const SDL_Rect* r) {
+		SDL_RenderFillRect(Resource::get(), r);
+	}
+
 	inline int set_draw_color(
 		Uint8 r,
 		Uint8 g,
