@@ -119,8 +119,8 @@ public:
 		const SDL_RendererFlip flip,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_RenderCopyEx(Resource::get(), t, src, dst, angle,
-			center, flip);
+		int status = SDL_RenderCopyEx(Resource::get(), t, src, dst,
+				angle, center, flip);
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
