@@ -37,6 +37,7 @@ namespace SDL {
 
 // aliases
 using Rect = SDL_Rect;
+using Event = SDL_Event;
 using Point = SDL_Rect;
 using RendererFlip = SDL_RendererFlip;
 
