@@ -91,7 +91,12 @@ public:
 		int* h,
 		ErrorHandler& handle_error)
 	{
-		int status = SDL_QueryTexture(Resource::get(), format, access, w, h);
+		int status = SDL_QueryTexture(
+			Resource::get(),
+			format,
+			access,
+			w,
+			h);
 		if (status != 0)
 			handle_error(SDL_GetError());
 		return status;
