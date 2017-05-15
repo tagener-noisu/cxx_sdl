@@ -70,17 +70,6 @@ inline const char* GetError() {
 	return SDL_GetError();
 }
 
-inline SDL_Surface* LoadBMP(const char* s) {
-	return SDL_LoadBMP(s);
-}
-
-inline SDL_Surface* LoadBMP(const char* s, ErrorHandler&& error_handler) {
-	auto surface = SDL_LoadBMP(s);
-	if (surface == nullptr)
-		error_handler(SDL_GetError());
-	return surface;
-}
-
 inline Uint32 GetTicks() {
 	return SDL_GetTicks();
 }
