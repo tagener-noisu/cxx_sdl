@@ -49,15 +49,12 @@ public:
 
 //-------------------------------------------------------------------
 
-inline SDL_Surface* Load(const char* file) {
-	return IMG_Load(file);
+inline Surface Load(const char* file) {
+	return {IMG_Load(file)};
 }
 
-inline SDL_Surface* Load(const char* file, ErrorHandler& handle_error) {
-	auto s = IMG_Load(file);
-	if (s == nullptr)
-		handle_error(SDL_GetError());
-	return s;
+inline Surface Load(const char* file, ErrorHandler& handle_error) {
+	return {IMG_Load(file), handle_error};
 }
 
 } // namespace
