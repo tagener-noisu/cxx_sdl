@@ -66,6 +66,10 @@ private:
 
 //-------------------------------------------------------------------
 
+inline int PollEvent(SDL_Event* e) {
+	return SDL_PollEvent(e);
+}
+
 inline const char* GetError() {
 	return SDL_GetError();
 }
