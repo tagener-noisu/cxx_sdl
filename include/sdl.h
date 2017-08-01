@@ -70,6 +70,12 @@ inline int PollEvent(SDL_Event* e) {
 	return SDL_PollEvent(e);
 }
 
+inline SDL_Event PollEvent() {
+	SDL_Event e {};
+	SDL_PollEvent(&e);
+	return e;
+}
+
 inline const char* GetError() {
 	return SDL_GetError();
 }
